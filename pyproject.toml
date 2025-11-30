@@ -1,0 +1,79 @@
+[project]
+name = "dashcam-telemetry"
+version = "0.1.0"
+description = "Extract GPS and sensor telemetry from dashcam videos"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "Marty", email = "marty@example.com"}]
+keywords = ["dashcam", "gps", "telemetry", "gpx", "video", "redtiger", "wolfbox"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+
+dependencies = [
+    "gpxpy>=1.6.0",
+    "geojson>=3.0.0",
+    "simplekml>=1.3.0",
+]
+
+[project.optional-dependencies]
+pandas = ["pandas>=2.0.0"]
+viewer = []  # Uses stdlib only
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+]
+
+[project.scripts]
+dashcam-telemetry = "dashcam_telemetry.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/dashcam-telemetry"
+Documentation = "https://github.com/yourusername/dashcam-telemetry#readme"
+Repository = "https://github.com/yourusername/dashcam-telemetry"
+Issues = "https://github.com/yourusername/dashcam-telemetry/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dashcam_telemetry"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.0",
+    "pytest>=9.0.1",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.7",
+]
