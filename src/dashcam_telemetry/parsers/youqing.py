@@ -19,7 +19,6 @@ from dashcam_telemetry.models import GPSPoint, GPSTrack
 from dashcam_telemetry.parsers.base import BaseParser, ParseError
 from dashcam_telemetry.utils.nmea import nmea_to_decimal
 
-
 # Magic bytes to identify YOUQINGGPS format
 MARKER_FREE_GPS = b"freeGPS "
 MARKER_YOUQING = b"YOUQINGGPS"
@@ -68,7 +67,7 @@ class YouqingParser(BaseParser):
                     return False
                 # Verify YOUQINGGPS brand marker
                 return chunk[pos + 12 : pos + 22] == MARKER_YOUQING
-        except (OSError, IOError):
+        except OSError:
             return False
 
     def parse(self, filepath: Path) -> GPSTrack:
@@ -86,7 +85,7 @@ class YouqingParser(BaseParser):
         try:
             with open(filepath, "rb") as f:
                 content = f.read()
-        except (OSError, IOError) as e:
+        except OSError as e:
             raise ParseError(f"Failed to read file: {e}") from e
 
         points: list[GPSPoint] = []
@@ -183,9 +182,7 @@ class YouqingParser(BaseParser):
             year_full = 2000 + year if year < 100 else year
             # Handle hour overflow (some devices report 24+)
             hour_clamped = hour % 24
-            timestamp = datetime(
-                year_full, month, day, hour_clamped, minute, second
-            )
+            timestamp = datetime(year_full, month, day, hour_clamped, minute, second)
         except ValueError:
             timestamp = None
 

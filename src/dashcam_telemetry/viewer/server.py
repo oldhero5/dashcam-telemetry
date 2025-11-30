@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import http.server
-import os
 import shutil
 import socketserver
 import tempfile
@@ -11,7 +10,7 @@ import threading
 import time
 import webbrowser
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from dashcam_telemetry.viewer.templates import generate_viewer_html
 
@@ -30,7 +29,7 @@ class SecureHandler(http.server.SimpleHTTPRequestHandler):
 
     allowed_dir: Path
 
-    def __init__(self, *args, directory: str | None = None, **kwargs):
+    def __init__(self, *args: Any, directory: str | None = None, **kwargs: Any) -> None:
         self.allowed_dir = Path(directory).resolve() if directory else Path.cwd()
         super().__init__(*args, directory=directory, **kwargs)
 
@@ -66,7 +65,7 @@ class SecureHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("X-Content-Type-Options", "nosniff")
         super().end_headers()
 
-    def log_message(self, format: str, *args) -> None:
+    def log_message(self, format: str, *args: Any) -> None:
         """Suppress logging for cleaner output."""
         pass
 
@@ -75,12 +74,18 @@ def find_available_port(start_port: int = 8765, max_attempts: int = 100) -> int:
     """Find an available port starting from start_port."""
     for port in range(start_port, start_port + max_attempts):
         try:
-            with socketserver.TCPServer(("127.0.0.1", port), None) as test:
+            # Pass None as handler to just test if port is available
+            with socketserver.TCPServer(
+                ("127.0.0.1", port),
+                None,  # type: ignore[arg-type]
+            ) as test:
                 test.server_close()
                 return port
         except OSError:
             continue
-    raise RuntimeError(f"No available port found in range {start_port}-{start_port + max_attempts}")
+    raise RuntimeError(
+        f"No available port found in range {start_port}-{start_port + max_attempts}"
+    )
 
 
 def launch_viewer(video_path: str, track: GPSTrack) -> None:
@@ -96,12 +101,12 @@ def launch_viewer(video_path: str, track: GPSTrack) -> None:
         video_path: Path to the video file
         track: GPSTrack with GPS points to display
     """
-    video_path = Path(video_path).resolve()
+    video_file = Path(video_path).resolve()
 
-    if not video_path.exists():
-        raise FileNotFoundError(f"Video file not found: {video_path}")
+    if not video_file.exists():
+        raise FileNotFoundError(f"Video file not found: {video_file}")
 
-    print(f"Preparing viewer for: {video_path.name}")
+    print(f"Preparing viewer for: {video_file.name}")
     print(f"GPS points: {len(track)}")
 
     # Create temp directory for serving
@@ -110,16 +115,16 @@ def launch_viewer(video_path: str, track: GPSTrack) -> None:
 
     try:
         # Symlink or copy video to temp directory
-        video_dest = temp_path / video_path.name
+        video_dest = temp_path / video_file.name
         try:
-            video_dest.symlink_to(video_path)
+            video_dest.symlink_to(video_file)
         except OSError:
             print("Creating video copy (this may take a moment)...")
-            shutil.copy2(video_path, video_dest)
+            shutil.copy2(video_file, video_dest)
 
         # Generate HTML viewer
         html_content = generate_viewer_html(
-            video_filename=video_path.name,
+            video_filename=video_file.name,
             track=track,
         )
         html_path = temp_path / "viewer.html"
@@ -129,9 +134,8 @@ def launch_viewer(video_path: str, track: GPSTrack) -> None:
         port = find_available_port()
 
         # Create server bound to localhost only
-        handler = lambda *args, **kwargs: SecureHandler(
-            *args, directory=temp_dir, **kwargs
-        )
+        def handler(*args: Any, **kwargs: Any) -> SecureHandler:
+            return SecureHandler(*args, directory=temp_dir, **kwargs)
 
         server = socketserver.TCPServer(("127.0.0.1", port), handler)
 

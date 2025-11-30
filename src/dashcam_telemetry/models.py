@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import csv
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -50,7 +50,7 @@ class GPSPoint:
             and self.fix_quality > 0
         )
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             "latitude": self.latitude,
@@ -79,7 +79,7 @@ class GPSTrack:
 
     points: list[GPSPoint] = field(default_factory=list)
     source_file: str = ""
-    device_info: dict | None = None
+    device_info: dict[str, Any] | None = None
 
     def __len__(self) -> int:
         """Return number of points in track."""
@@ -161,7 +161,7 @@ class GPSTrack:
 
         export_csv(self, Path(path))
 
-    def to_dataframe(self) -> "pd.DataFrame":
+    def to_dataframe(self) -> pd.DataFrame:
         """Convert track to pandas DataFrame.
 
         Requires pandas to be installed: pip install dashcam-telemetry[pandas]

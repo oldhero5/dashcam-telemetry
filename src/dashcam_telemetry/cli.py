@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
+from typing import cast
 
 from dashcam_telemetry.models import GPSTrack
 from dashcam_telemetry.parsers import (
@@ -109,7 +110,7 @@ def cmd_info(args: argparse.Namespace) -> int:
 
             if track.bounds:
                 min_lat, min_lon, max_lat, max_lon = track.bounds
-                print(f"Bounds:")
+                print("Bounds:")
                 print(f"  Lat: {min_lat:.6f} to {max_lat:.6f}")
                 print(f"  Lon: {min_lon:.6f} to {max_lon:.6f}")
 
@@ -164,7 +165,8 @@ def cmd_view(args: argparse.Namespace) -> int:
         from dashcam_telemetry.viewer import launch_viewer
     except ImportError:
         print(
-            "Error: Viewer not available. Install with: pip install dashcam-telemetry[viewer]",
+            "Error: Viewer not available. "
+            "Install with: pip install dashcam-telemetry[viewer]",
             file=sys.stderr,
         )
         return 1
@@ -227,7 +229,8 @@ def main(argv: list[str] | None = None) -> int:
         help="Input video file(s)",
     )
     extract_parser.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         help="Output file path (single file mode)",
     )
     extract_parser.add_argument(
@@ -235,13 +238,15 @@ def main(argv: list[str] | None = None) -> int:
         help="Output directory (batch mode)",
     )
     extract_parser.add_argument(
-        "-f", "--format",
+        "-f",
+        "--format",
         choices=EXPORT_FORMATS,
         default="gpx",
         help="Output format (default: gpx)",
     )
     extract_parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
         help="Verbose output",
     )
@@ -288,7 +293,7 @@ def main(argv: list[str] | None = None) -> int:
         parser.print_help()
         return 0
 
-    return args.func(args)
+    return cast(int, args.func(args))
 
 
 if __name__ == "__main__":

@@ -4,10 +4,6 @@ import json
 import tempfile
 from pathlib import Path
 
-import pytest
-
-from dashcam_telemetry.models import GPSTrack
-
 
 class TestGPXExporter:
     """Tests for GPX export."""

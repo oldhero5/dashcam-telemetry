@@ -39,7 +39,7 @@ def generate_viewer_html(video_filename: str, track: GPSTrack) -> str:
 
     route_coords = [[p.latitude, p.longitude] for p in track.points]
 
-    return f'''<!DOCTYPE html>
+    return f"""<!DOCTYPE html>
 <html>
 <head>
     <title>GPS Viewer - {video_filename}</title>
@@ -270,4 +270,4 @@ def generate_viewer_html(video_filename: str, track: GPSTrack) -> str:
         }});
     </script>
 </body>
-</html>'''
+</html>"""

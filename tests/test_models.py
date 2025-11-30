@@ -1,6 +1,5 @@
 """Tests for data models."""
 
-import pytest
 from datetime import datetime
 
 from dashcam_telemetry.models import GPSPoint, GPSTrack

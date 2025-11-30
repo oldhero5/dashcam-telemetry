@@ -44,9 +44,7 @@ def export_csv(track: GPSTrack, output_path: Path) -> None:
 
         for point in track.points:
             row = {
-                "timestamp": (
-                    point.timestamp.isoformat() if point.timestamp else ""
-                ),
+                "timestamp": (point.timestamp.isoformat() if point.timestamp else ""),
                 "latitude": point.latitude,
                 "longitude": point.longitude,
                 "altitude": point.altitude if point.altitude is not None else "",
@@ -54,14 +52,8 @@ def export_csv(track: GPSTrack, output_path: Path) -> None:
                 "heading": point.heading,
                 "fix_quality": point.fix_quality,
                 "satellites": point.satellites,
-                "gsensor_x": (
-                    point.gsensor_x if point.gsensor_x is not None else ""
-                ),
-                "gsensor_y": (
-                    point.gsensor_y if point.gsensor_y is not None else ""
-                ),
-                "gsensor_z": (
-                    point.gsensor_z if point.gsensor_z is not None else ""
-                ),
+                "gsensor_x": (point.gsensor_x if point.gsensor_x is not None else ""),
+                "gsensor_y": (point.gsensor_y if point.gsensor_y is not None else ""),
+                "gsensor_z": (point.gsensor_z if point.gsensor_z is not None else ""),
             }
             writer.writerow(row)

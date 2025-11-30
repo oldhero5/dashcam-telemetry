@@ -1,7 +1,11 @@
 """Parsers for various dashcam GPS formats."""
 
 from dashcam_telemetry.models import GPSTrack
-from dashcam_telemetry.parsers.base import BaseParser, ParseError, UnsupportedFormatError
+from dashcam_telemetry.parsers.base import (
+    BaseParser,
+    ParseError,
+    UnsupportedFormatError,
+)
 from dashcam_telemetry.parsers.youqing import YouqingParser
 
 # Registry of available parsers (order matters - first match wins)

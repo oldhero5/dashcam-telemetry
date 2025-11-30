@@ -55,7 +55,7 @@ def export_gpx(track: GPSTrack, output_path: Path) -> None:
 
         # Add course/heading if available
         if point.heading > 0:
-            gpx_point.course = point.heading
+            gpx_point.course = point.heading  # type: ignore[assignment]
 
         gpx_segment.points.append(gpx_point)
 

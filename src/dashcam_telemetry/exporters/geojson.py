@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-import geojson
 from geojson import Feature, FeatureCollection, LineString, Point
 
 if TYPE_CHECKING:
@@ -31,10 +30,7 @@ def export_geojson(track: GPSTrack, output_path: Path) -> None:
 
     # Create LineString for the route
     if track.points:
-        coordinates = [
-            [point.longitude, point.latitude]
-            for point in track.points
-        ]
+        coordinates = [[point.longitude, point.latitude] for point in track.points]
 
         route_properties: dict[str, Any] = {
             "type": "route",
